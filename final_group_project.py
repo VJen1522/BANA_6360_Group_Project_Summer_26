@@ -2,12 +2,11 @@
 #predict the sales_cat variable using a decision tree with a max depth of 1, min n of 2, and seed of 1234
 
 import pandas as pd
-from sklearn import tree
-from sklearn.pipeline import Pipeline
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.metrics import confusion_matrix, classification_report
+import sklearn.pipeline
+import sklearn.tree
+import sklearn.compose
+import sklearn.preprocessing
+import sklearn.metrics
 
 # --- Load both files ---
 carseat_train = pd.read_csv('carseats_train.csv')
@@ -24,17 +23,17 @@ y_test = carseat_test['sales_cat']
 # --- Preprocessing: one-hot encode the 3 categorical columns ---
 categorical_cols = ['shelf_location', 'urban', 'us']
 
-column_transformer = ColumnTransformer(
+column_transformer = sklearn.compose.ColumnTransformer(
     [
-        ('dummify', OneHotEncoder(sparse_output=False), categorical_cols)
+        ('dummify', sklearn.preprocessing.OneHotEncoder(sparse_output=False), categorical_cols)
     ],
     remainder='passthrough'  # leave the numeric columns untouched
 )
 
 # --- Full pipeline: preprocessing + model together ---
-decision_tree_pipeline = Pipeline([
+decision_tree_pipeline = sklearn.pipeline.Pipeline([
     ('preprocessing', column_transformer),
-    ('dtree', DecisionTreeClassifier(
+    ('dtree', sklearn.tree.DecisionTreeClassifier(
         max_depth=1,
         min_samples_leaf=2,   # "min n of 2"
         random_state=1234
@@ -49,12 +48,12 @@ y_pred = decision_tree_pipeline.predict(X_test)
 
 # --- Confusion matrix ---
 # labels=['High','Low'] makes the row/column order explicit and predictable
-cm = confusion_matrix(y_test, y_pred, labels=['High', 'Low'])
+cm = sklearn.metrics.confusion_matrix(y_test, y_pred, labels=['High', 'Low'])
 print("Confusion matrix (rows=actual, cols=predicted), order = [High, Low]:")
 print(cm)
 
-tp, fn, fp, tn = cm.ravel()  # careful: with labels=['High','Low'], "High" is being treated as the positive class here
+tp, fn, fp, tn = cm.ravel()  # with labels=['High','Low'], "High" is the positive class here
 print(f"\nTP={tp}  FN={fn}  FP={fp}  TN={tn}")
 
 print("\nscikit-learn's report (to check your by-hand math):")
-print(classification_report(y_test, y_pred, labels=['High', 'Low']))
+print(sklearn.metrics.classification_report(y_test, y_pred, labels=['High', 'Low']))
