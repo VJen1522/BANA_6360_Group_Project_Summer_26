@@ -68,15 +68,15 @@ def main():
     print(f"\nTP={tp}  FN={fn}  FP={fp}  TN={tn}")
 
     # --- Metrics ---
-    accuracy = (tp + tn) / cm.sum()
-    precision = tp / (tp + fp) if (tp + fp) else 0.0
     recall = tp / (tp + fn) if (tp + fn) else 0.0
+    accuracy = (tp + tn) / cm.sum()
     specificity = specificity_score(y_test, y_pred)
+    precision = tp / (tp + fp) if (tp + fp) else 0.0
 
-    print(f"\nAccuracy:    {accuracy:.4f}")
-    print(f"Precision:   {precision:.4f}")
     print(f"Recall:      {recall:.4f}")
+    print(f"\nAccuracy:    {accuracy:.4f}")
     print(f"Specificity: {specificity:.4f}")
+    print(f"Precision:   {precision:.4f}")
 
     print("\nscikit-learn's report (to check our by-hand math):")
     print(classification_report(y_test, y_pred, labels=['High', 'Low']))
