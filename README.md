@@ -1,4 +1,4 @@
-# Carseats Sales Category Prediction
+# carseats-sales-classification
 
 This project builds a simple classification model to predict the `sales_cat` variable using a decision tree trained on the Carseats dataset.
 
